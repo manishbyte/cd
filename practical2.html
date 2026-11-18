@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical 2: Lexical Analyzer to Identify Numbers — Compiler Design</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-wrapper">
+    <!-- Header / Navigation Bar -->
+    <header class="header-bar">
+        <a href="index.html" class="site-title">
+            <span class="site-logo">CD LAB</span>
+            <span class="site-title-text">Compiler Design Manual</span>
+            <span class="site-title-badge">Ubuntu Edition</span>
+        </a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Main Page</a></li>
+                <li><a href="practical1.html">Prac 1</a></li>
+                <li><a href="practical2.html" class="active">Prac 2</a></li>
+                <li><a href="practical3.html">Prac 3</a></li>
+                <li><a href="practical4.html">Prac 4</a></li>
+                <li><a href="practical5.html">Prac 5</a></li>
+                <li><a href="practical6.html">Prac 6</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="page-title">Practical 2: Lexical Analyzer to Identify Numbers</h1>
+       
+
+        <!-- Section 2: Step 1 -->
+        <h2 id="step-1">Step 1: Create Practical Workspace Directory</h2>
+        <p>Set up the directory inside the Ubuntu terminal:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Bash Terminal</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>mkdir -p ~/Desktop/CompilerLab/Practical2
+cd ~/Desktop/CompilerLab/Practical2</code></pre>
+        </div>
+
+        <!-- Section 3: Step 2 -->
+        <h2 id="step-2">Step 2: Create Test Input Dataset (<code>input.txt</code>)</h2>
+        <p>Generate the test dataset covering all positive, negative, exponential, and invalid cases:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit input.txt</code></pre>
+        </div>
+
+        <p>Paste the following test values and save:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">input.txt</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>0b1010
+0x1F
+017
+42
+-7
++9
+3.14
+-56.78
+12e5
+1.5e-3
+abc
+12abc</code></pre>
+        </div>
+
+        <!-- Section 4: Step 3 -->
+        <h2 id="step-3">Step 3: Create Lexer Program (<code>program2.l</code>)</h2>
+        <p>Open the editor to create the Flex specification:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit program2.l</code></pre>
+        </div>
+
+        <p>Paste the complete Flex source code below:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">program2.l</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>%option noyywrap
+%{
+#include &lt;stdio.h&gt;
+%}
+
+Binary      0[bB][01]+
+Hex         0[xX][0-9A-Fa-f]+
+Octal       0[0-7]+
+Exponent    [-+]?([0-9]+"."?[0-9]*|"."[0-9]+)[eE][-+]?[0-9]+
+Float       [-+]?[0-9]*"."[0-9]+
+Integer     [-+]?[0-9]+
+
+%%
+{Binary}    { printf("Binary number        : %s\n", yytext); }
+{Hex}       { printf("Hexadecimal number   : %s\n", yytext); }
+{Octal}     { printf("Octal number         : %s\n", yytext); }
+{Exponent}  { printf("Exponent number      : %s\n", yytext); }
+{Float}     {
+                if (yytext[0] == '-')
+                    printf("Negative Float       : %s\n", yytext);
+                else
+                    printf("Positive Float       : %s\n", yytext);
+            }
+{Integer}   {
+                if (yytext[0] == '-')
+                    printf("Negative Integer     : %s\n", yytext);
+                else
+                    printf("Positive Integer     : %s\n", yytext);
+            }
+[ \t\r\n]+  ;
+[^ \t\r\n]+ { printf("Invalid              : %s\n", yytext); }
+%%
+
+int main(int argc, char *argv[])
+{
+    FILE *fp;
+    if (argc &lt; 2) {
+        printf("Usage: %s input.txt\n", argv[0]);
+        return 1;
+    }
+    fp = fopen(argv[1], "r");
+    if (fp == NULL) {
+        printf("Cannot open input file\n");
+        return 1;
+    }
+    yyin = fp;
+    yylex();
+    fclose(fp);
+    return 0;
+}</code></pre>
+        </div>
+
+        <!-- Section 5: Step 4 -->
+        <h2 id="step-4">Step 4: Compile and Execute on Ubuntu</h2>
+        <p>Run the toolchain commands sequentially:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Terminal Build &amp; Run</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>flex program2.l
+gcc lex.yy.c -o a.out
+./a.out input.txt</code></pre>
+        </div>
+
+        <!-- Section 6: Output -->
+        <h2 id="expected-output">Expected Terminal Output</h2>
+        <p>Every line from <code>input.txt</code> is analyzed without regex interference:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Standard Output</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre class="terminal-output"><code>Binary number        : 0b1010
+Hexadecimal number   : 0x1F
+Octal number         : 017
+Positive Integer     : 42
+Negative Integer     : -7
+Positive Integer     : +9
+Positive Float       : 3.14
+Negative Float       : -56.78
+Exponent number      : 12e5
+Exponent number      : 1.5e-3
+Invalid              : abc
+Invalid              : 12abc</code></pre>
+        </div>
+
+        <!-- Navigation Pagination -->
+        <div class="nav-pagination">
+            <a href="practical1.html">&larr; Previous: Practical 1</a>
+            <a href="practical3.html">Next: Practical 3 (Yacc Calculator) &rarr;</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>Compiler Design Laboratory Reference Manual</strong> &bull; Ubuntu Dark Theme Edition</p>
+        <p>Formatted in encyclopedic Wikipedia style &bull; Practical 2: Number System Lexer</p>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

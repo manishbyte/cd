@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical 6: DFA for Divisibility by 3 — Compiler Design</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-wrapper">
+    <!-- Header / Navigation Bar -->
+    <header class="header-bar">
+        <a href="index.html" class="site-title">
+            <span class="site-logo">CD LAB</span>
+            <span class="site-title-text">Compiler Design Manual</span>
+            <span class="site-title-badge">Ubuntu Edition</span>
+        </a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Main Page</a></li>
+                <li><a href="practical1.html">Prac 1</a></li>
+                <li><a href="practical2.html">Prac 2</a></li>
+                <li><a href="practical3.html">Prac 3</a></li>
+                <li><a href="practical4.html">Prac 4</a></li>
+                <li><a href="practical5.html">Prac 5</a></li>
+                <li><a href="practical6.html" class="active">Prac 6</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="page-title">Practical 6: Deterministic Finite Automaton (DFA) for Divisibility by 3</h1>
+       
+
+        <!-- Section 2: Step 1 -->
+        <h2 id="step-1">Step 1: Create Practical Workspace Directory</h2>
+        <p>Open the Ubuntu terminal and set up the Practical 6 directory:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Bash Terminal</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>mkdir -p ~/Desktop/CompilerLab/Practical6
+cd ~/Desktop/CompilerLab/Practical6</code></pre>
+        </div>
+
+        <!-- Section 3: Step 2 -->
+        <h2 id="step-2">Step 2: Create Token Recognizer (<code>dfa.l</code>)</h2>
+        <p>Open the editor to create the token classification file:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit dfa.l</code></pre>
+        </div>
+
+        <p>Paste the following Flex code and save:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">dfa.l</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>%{
+#include "y.tab.h"
+%}
+
+%%
+[0369]  { return ZERO; }
+[147]   { return ONE; }
+[258]   { return TWO; }
+\n      { return NL; }
+.       { return yytext[0]; }
+%%
+
+int yywrap(void)
+{
+    return 1;
+}</code></pre>
+        </div>
+
+        <!-- Section 4: Step 3 -->
+        <h2 id="step-3">Step 3: Create State Machine Parser (<code>dfa.y</code>)</h2>
+        <p>Open the state automaton definition file in the editor:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit dfa.y</code></pre>
+        </div>
+
+        <p>Paste the complete state-transition grammar:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">dfa.y</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>%{
+#include &lt;stdio.h&gt;
+int yylex(void);
+void yyerror(const char *s);
+%}
+
+%token ZERO ONE TWO NL
+%start q0
+
+%%
+q0 : ZERO q0
+   | ONE q1
+   | TWO q2
+   | NL { printf("Number is divisible by 3\n"); YYACCEPT; }
+   ;
+
+q1 : ZERO q1
+   | ONE q2
+   | TWO q0
+   | NL { printf("Number is not divisible by 3, remainder is 1\n"); YYACCEPT; }
+   ;
+
+q2 : ZERO q2
+   | ONE q0
+   | TWO q1
+   | NL { printf("Number is not divisible by 3, remainder is 2\n"); YYACCEPT; }
+   ;
+%%
+
+int main(void)
+{
+    printf("\nEnter Decimal number to check divisibility by 3:\n");
+    yyparse();
+    return 0;
+}
+
+void yyerror(const char *s)
+{
+    printf("\nInvalid input, enter only decimal digits\n");
+}</code></pre>
+        </div>
+
+        <!-- Section 5: Step 4 -->
+        <h2 id="step-4">Step 4: Multi-Stage Compilation Pipeline</h2>
+        <p>Compile Bison first to produce header tokens, then Flex, and link with GCC:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Terminal Build Commands</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>bison -y -d dfa.y
+flex dfa.l
+gcc y.tab.c lex.yy.c -o dfa</code></pre>
+        </div>
+
+        <!-- Section 6: Step 5 -->
+        <h2 id="step-5">Step 5: Execution &amp; Test Verification Matrix</h2>
+        <p>Run the compiled binary:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Terminal Run Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>./dfa</code></pre>
+        </div>
+
+        <p>Test with various decimal numbers to verify state transitions:</p>
+
+        <div style="overflow-x: auto;">
+            <table class="wikitable">
+                <thead>
+                    <tr>
+                        <th>Input Number</th>
+                        <th>Modulo Sum Calculation</th>
+                        <th>Terminal Output</th>
+                        <th>Evaluation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>123</code></td>
+                        <td>1 + 2 + 3 = 6 &equiv; 0 mod 3</td>
+                        <td><code>Number is divisible by 3</code></td>
+                        <td><strong>Accept (q0)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>10</code></td>
+                        <td>1 + 0 = 1 &equiv; 1 mod 3</td>
+                        <td><code>Number is not divisible by 3, remainder is 1</code></td>
+                        <td><em>Reject (q1)</em></td>
+                    </tr>
+                    <tr>
+                        <td><code>25</code></td>
+                        <td>2 + 5 = 7 &equiv; 1 mod 3</td>
+                        <td><code>Number is not divisible by 3, remainder is 1</code></td>
+                        <td><em>Reject (q1)</em></td>
+                    </tr>
+                    <tr>
+                        <td><code>47</code></td>
+                        <td>4 + 7 = 11 &equiv; 2 mod 3</td>
+                        <td><code>Number is not divisible by 3, remainder is 2</code></td>
+                        <td><em>Reject (q2)</em></td>
+                    </tr>
+                    <tr>
+                        <td><code>12a</code></td>
+                        <td>Contains non-decimal character 'a'</td>
+                        <td><code>Invalid input, enter only decimal digits</code></td>
+                        <td><em>Syntax Error</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Navigation Pagination -->
+        <div class="nav-pagination">
+            <a href="practical5.html">&larr; Previous: Practical 5</a>
+            <a href="index.html">Back to Main Portal &rarr;</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>Compiler Design Laboratory Reference Manual</strong> &bull; Ubuntu Dark Theme Edition</p>
+        <p>Formatted in encyclopedic Wikipedia style &bull; Practical 6: DFA Divisibility by 3</p>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

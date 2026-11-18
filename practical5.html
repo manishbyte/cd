@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical 5: Code Generator for Intel 8086 Assembly — Compiler Design</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-wrapper">
+    <!-- Header / Navigation Bar -->
+    <header class="header-bar">
+        <a href="index.html" class="site-title">
+            <span class="site-logo">CD LAB</span>
+            <span class="site-title-text">Compiler Design Manual</span>
+            <span class="site-title-badge">Ubuntu Edition</span>
+        </a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Main Page</a></li>
+                <li><a href="practical1.html">Prac 1</a></li>
+                <li><a href="practical2.html">Prac 2</a></li>
+                <li><a href="practical3.html">Prac 3</a></li>
+                <li><a href="practical4.html">Prac 4</a></li>
+                <li><a href="practical5.html" class="active">Prac 5</a></li>
+                <li><a href="practical6.html">Prac 6</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="page-title">Practical 5: Target Code Generator for Intel 8086 Assembly</h1>
+       
+
+        <!-- Section 2: Step 1 -->
+        <h2 id="step-1">Step 1: Create Practical Workspace Directory</h2>
+        <p>Open the terminal and create the Practical 5 directory:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Bash Terminal</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>mkdir -p ~/Desktop/CompilerLab/Practical5
+cd ~/Desktop/CompilerLab/Practical5</code></pre>
+        </div>
+
+        <!-- Section 3: Step 2 -->
+        <h2 id="step-2">Step 2: Create Test Assignment Input (<code>input.txt</code>)</h2>
+        <p>Open the editor to create the expression input file:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit input.txt</code></pre>
+        </div>
+
+        <p>Paste the expressions below (ensure you press <kbd>Enter</kbd> after the last line) and save:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">input.txt</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>a=b+c
+x=y-z
+p=q*r
+m=n/d
+k=j</code></pre>
+        </div>
+
+        <!-- Section 4: Step 3 -->
+        <h2 id="step-3">Step 3: Create Lexer Specification (<code>exp.l</code>)</h2>
+        <p>Create the lexical scanner in your editor:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit exp.l</code></pre>
+        </div>
+
+        <p>Paste the following Lex program and save:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">exp.l</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>%{
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include "y.tab.h"
+%}
+
+%%
+[a-zA-Z_][a-zA-Z0-9_]*|[0-9]+ {
+    strncpy(yylval.vname, yytext, sizeof(yylval.vname) - 1);
+    yylval.vname[sizeof(yylval.vname) - 1] = '\0';
+    return NAME;
+}
+[ \t\r]     ;
+\n          { return '\n'; }
+.           { return yytext[0]; }
+%%
+
+int yywrap(void)
+{
+    return 1;
+}</code></pre>
+        </div>
+
+        <!-- Section 5: Step 4 -->
+        <h2 id="step-4">Step 4: Create Code Generator Parser (<code>exp.y</code>)</h2>
+        <p>Open the parser file in your editor:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit exp.y</code></pre>
+        </div>
+
+        <p>Paste the complete syntax-directed translation grammar:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">exp.y</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>%{
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+int yylex(void);
+void yyerror(const char *s);
+extern FILE *yyin;
+%}
+
+%union {
+    char vname[32];
+}
+
+%left '+' '-'
+%left '*' '/'
+
+%token &lt;vname&gt; NAME
+%type  &lt;vname&gt; expression
+
+%%
+input
+    : line '\n' input
+    | line
+    | '\n' input
+    | /* empty */
+    ;
+
+line
+    : NAME '=' expression
+      {
+          printf("MOV %s, AX\n\n", $1);
+      }
+    ;
+
+expression
+    : NAME '+' NAME
+      {
+          printf("MOV AX, %s\n", $1);
+          printf("ADD AX, %s\n", $3);
+          strcpy($$, $1);
+      }
+    | NAME '-' NAME
+      {
+          printf("MOV AX, %s\n", $1);
+          printf("SUB AX, %s\n", $3);
+          strcpy($$, $1);
+      }
+    | NAME '*' NAME
+      {
+          printf("MOV AX, %s\n", $1);
+          printf("MOV BX, %s\n", $3);
+          printf("MUL BX\n");
+          strcpy($$, $1);
+      }
+    | NAME '/' NAME
+      {
+          printf("MOV AX, %s\n", $1);
+          printf("MOV DX, 0\n");
+          printf("MOV BX, %s\n", $3);
+          printf("DIV BX\n");
+          strcpy($$, $1);
+      }
+    | NAME
+      {
+          printf("MOV AX, %s\n", $1);
+          strcpy($$, $1);
+      }
+    ;
+%%
+
+int main(int argc, char *argv[])
+{
+    FILE *fpInput;
+    const char *fname = (argc &gt; 1) ? argv[1] : "input.txt";
+
+    fpInput = fopen(fname, "r");
+    if (fpInput == NULL) {
+        printf("File read error: cannot open %s\n", fname);
+        exit(1);
+    }
+    yyin = fpInput;
+    yyparse();
+    fclose(fpInput);
+    return 0;
+}
+
+void yyerror(const char *s)
+{
+    printf("Invalid expression\n");
+}</code></pre>
+        </div>
+
+        <!-- Section 6: Step 5 -->
+        <h2 id="step-5">Step 5: Multi-Stage Compilation Pipeline</h2>
+        <p>Run the generator and build the executable with GCC:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Terminal Build Commands</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>bison -y -d exp.y
+flex exp.l
+gcc y.tab.c lex.yy.c -o exp</code></pre>
+        </div>
+
+        <!-- Section 7: Step 6 -->
+        <h2 id="step-6">Step 6: Execution &amp; Expected Assembly Output</h2>
+        <p>Execute the program against <code>input.txt</code>:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Terminal Execution</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>./exp</code></pre>
+        </div>
+
+        <p>The compiler generates the complete 8086 assembly sequence:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Generated 8086 Assembly Code</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre class="terminal-output"><code>MOV AX, b
+ADD AX, c
+MOV a, AX
+
+MOV AX, y
+SUB AX, z
+MOV x, AX
+
+MOV AX, q
+MOV BX, r
+MUL BX
+MOV p, AX
+
+MOV AX, n
+MOV DX, 0
+MOV BX, d
+DIV BX
+MOV m, AX
+
+MOV AX, j
+MOV k, AX</code></pre>
+        </div>
+
+        <!-- Navigation Pagination -->
+        <div class="nav-pagination">
+            <a href="practical4.html">&larr; Previous: Practical 4</a>
+            <a href="practical6.html">Next: Practical 6 (DFA Divisibility by 3) &rarr;</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>Compiler Design Laboratory Reference Manual</strong> &bull; Ubuntu Dark Theme Edition</p>
+        <p>Formatted in encyclopedic Wikipedia style &bull; Practical 5: Target Code Generation</p>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical 4: Context Free Grammar (0ⁿ1ⁿ) — Compiler Design</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-wrapper">
+    <!-- Header / Navigation Bar -->
+    <header class="header-bar">
+        <a href="index.html" class="site-title">
+            <span class="site-logo">CD LAB</span>
+            <span class="site-title-text">Compiler Design Manual</span>
+            <span class="site-title-badge">Ubuntu Edition</span>
+        </a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Main Page</a></li>
+                <li><a href="practical1.html">Prac 1</a></li>
+                <li><a href="practical2.html">Prac 2</a></li>
+                <li><a href="practical3.html">Prac 3</a></li>
+                <li><a href="practical4.html" class="active">Prac 4</a></li>
+                <li><a href="practical5.html">Prac 5</a></li>
+                <li><a href="practical6.html">Prac 6</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="page-title">Practical 4: Context Free Grammar for Language L = { 0ⁿ1ⁿ | n &ge; 1 }</h1>
+       
+
+        <!-- Section 2: Step 1 -->
+        <h2 id="step-1">Step 1: Create Practical Workspace Directory</h2>
+        <p>Open the Ubuntu terminal and set up the dedicated folder:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Bash Terminal</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>mkdir -p ~/Desktop/CompilerLab/Practical4
+cd ~/Desktop/CompilerLab/Practical4</code></pre>
+        </div>
+
+        <!-- Section 3: Step 2 -->
+        <h2 id="step-2">Step 2: Create Token Recognizer (<code>cfg.l</code>)</h2>
+        <p>Open the text editor for the lexer:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit cfg.l</code></pre>
+        </div>
+
+        <p>Paste the following Flex code and save:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">cfg.l</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>%{
+#include "y.tab.h"
+%}
+
+%%
+"0"     { return ZERO; }
+"1"     { return ONE; }
+\n      { return NL; }
+.       { return yytext[0]; }
+%%
+
+int yywrap(void)
+{
+    return 1;
+}</code></pre>
+        </div>
+
+        <!-- Section 4: Step 3 -->
+        <h2 id="step-3">Step 3: Create CFG Grammar Specification (<code>cfg.y</code>)</h2>
+        <p>Open the parser file in the editor:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit cfg.y</code></pre>
+        </div>
+
+        <p>Paste the following Yacc grammar specification and save:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">cfg.y</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>%{
+#include &lt;stdio.h&gt;
+int flag = 0;
+int yylex(void);
+void yyerror(const char *s);
+%}
+
+%token ONE ZERO NL
+
+%%
+str1 : str2 nl ;
+
+str2 : ZERO str2 ONE
+     | ZERO ONE
+     ;
+
+nl   : NL { YYACCEPT; } ;
+%%
+
+int main(void)
+{
+    printf("\nEnter string (any combination of 0 and 1)\n");
+    yyparse();
+    if (flag == 0)
+        printf("\nEntered string is Valid for L={0^n1^n}\n\n");
+    return 0;
+}
+
+void yyerror(const char *s)
+{
+    printf("\nEntered string is Invalid for L={0^n1^n}\n\n");
+    flag = 1;
+}</code></pre>
+        </div>
+
+        <!-- Section 5: Step 4 -->
+        <h2 id="step-4">Step 4: Compile with Bison, Flex, and GCC</h2>
+        <p>Compile the parser header, link with the lexer, and build the target binary:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Terminal Build Pipeline</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>bison -y -d cfg.y
+flex cfg.l
+gcc y.tab.c lex.yy.c -o cfg</code></pre>
+        </div>
+
+        <!-- Section 6: Step 5 -->
+        <h2 id="step-5">Step 5: Test Verification Matrix</h2>
+        <p>Execute the program with <code>./cfg</code> and verify language recognition:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Terminal Execution</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>./cfg</code></pre>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table class="wikitable">
+                <thead>
+                    <tr>
+                        <th>Input String</th>
+                        <th>Analysis / Condition</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>01</code></td>
+                        <td>n = 1 (Exactly one '0' followed by one '1')</td>
+                        <td><strong>Valid</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>0011</code></td>
+                        <td>n = 2 (Two '0's followed by two '1's)</td>
+                        <td><strong>Valid</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>000111</code></td>
+                        <td>n = 3 (Three '0's followed by three '1's)</td>
+                        <td><strong>Valid</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>0101</code></td>
+                        <td>Alternating sequence &mdash; violates grammar order</td>
+                        <td><em>Invalid</em></td>
+                    </tr>
+                    <tr>
+                        <td><code>001</code></td>
+                        <td>Unbalanced &mdash; two '0's but only one '1'</td>
+                        <td><em>Invalid</em></td>
+                    </tr>
+                    <tr>
+                        <td><code>10</code></td>
+                        <td>Inverted order &mdash; '1' precedes '0'</td>
+                        <td><em>Invalid</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Navigation Pagination -->
+        <div class="nav-pagination">
+            <a href="practical3.html">&larr; Previous: Practical 3</a>
+            <a href="practical5.html">Next: Practical 5 (8086 Code Generator) &rarr;</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>Compiler Design Laboratory Reference Manual</strong> &bull; Ubuntu Dark Theme Edition</p>
+        <p>Formatted in encyclopedic Wikipedia style &bull; Practical 4: Context-Free Grammar</p>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+/* ==========================================================================
+   Wikipedia Minimalist Black & White Dark Theme
+   High-contrast, pure black background with crisp white typography.
+   Clean, academic, distraction-free document layout.
+   ========================================================================== */
+
+:root {
+    /* Pure Black & White Palette */
+    --bg-page: #000000;
+    --bg-wrapper: #080808;
+    --bg-surface: #121212;
+    --bg-surface-alt: #1a1a1a;
+    --bg-code: #050505;
+    --bg-code-header: #141414;
+    
+    --border-color: #2c2c2c;
+    --border-subtle: #202020;
+    --border-light: #3a3a3a;
+
+    --text-primary: #ffffff;
+    --text-secondary: #c0c0c0;
+    --text-muted: #888888;
+
+    --link-color: #ffffff;
+    --link-visited: #d0d0d0;
+    --link-hover: #ffffff;
+
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-serif: "Linux Libertine", Georgia, Cambria, "Times New Roman", serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-page);
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    line-height: 1.65;
+    font-size: 15px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Page wrapper - Wikipedia layout with black aesthetic */
+.site-wrapper {
+    background-color: var(--bg-wrapper);
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    max-width: 1140px;
+    width: 100%;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: underline;
+    text-decoration-color: #555555;
+    text-underline-offset: 3px;
+    transition: color 0.1s ease, text-decoration-color 0.1s ease;
+}
+
+a:visited {
+    color: var(--link-visited);
+    text-decoration-color: #555555;
+}
+
+a:hover {
+    color: #ffffff;
+    text-decoration-color: #ffffff;
+}
+
+/* ================= Header & Nav ================= */
+.header-bar {
+    border-bottom: 1px solid var(--border-color);
+    padding: 14px 32px;
+    background-color: #050505;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.site-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.site-title:visited, .site-title:hover {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.site-logo {
+    border: 1px solid #ffffff;
+    padding: 3px 8px;
+    background: #ffffff;
+    color: #000000;
+    font-size: 0.82rem;
+    font-weight: 800;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.site-title-text {
+    font-weight: 600;
+    letter-spacing: -0.2px;
+}
+
+.site-title-badge {
+    font-size: 0.72rem;
+    padding: 2px 7px;
+    background-color: #1a1a1a;
+    color: #cccccc;
+    border-radius: 3px;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.nav-links li {
+    display: inline;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    padding: 5px 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    display: inline-block;
+}
+
+.nav-links a:hover {
+    color: #ffffff;
+    background-color: #1a1a1a;
+    border-color: var(--border-color);
+    text-decoration: none;
+}
+
+.nav-links a.active {
+    font-weight: 700;
+    color: #000000;
+    background-color: #ffffff;
+    border-color: #ffffff;
+    text-decoration: none;
+}
+
+/* ================= Main Container ================= */
+.container {
+    padding: 32px 36px 64px;
+    flex: 1;
+}
+
+/* ================= Wikipedia Headings ================= */
+h1.page-title {
+    font-family: var(--font-serif);
+    font-size: 2.1rem;
+    font-weight: normal;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    color: #ffffff;
+}
+
+.page-subtitle {
+    font-size: 0.96rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 14px;
+}
+
+h2 {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: normal;
+    border-bottom: 1px solid var(--border-color);
+    margin: 36px 0 16px;
+    padding-bottom: 6px;
+    color: #ffffff;
+}
+
+h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 24px 0 10px;
+    color: #ffffff;
+}
+
+p {
+    margin-bottom: 14px;
+    color: var(--text-primary);
+}
+
+ul, ol {
+    margin-left: 28px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+li {
+    margin-bottom: 6px;
+}
+
+/* ================= Wikipedia Table of Contents (TOC) ================= */
+.toc-box {
+    background-color: #0d0d0d;
+    border: 1px solid var(--border-color);
+    padding: 14px 22px;
+    display: table;
+    margin: 20px 0 30px;
+    font-size: 0.9rem;
+    border-radius: 3px;
+    min-width: 290px;
+}
+
+.toc-title {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 5px;
+}
+
+.toc-box ul {
+    margin-left: 20px;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+.toc-box li {
+    margin-bottom: 5px;
+}
+
+.toc-box a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.toc-box a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.toc-box ul ul {
+    margin-left: 18px;
+    margin-top: 4px;
+}
+
+/* ================= Wikipedia Noticebox / Callout ================= */
+.notice-box {
+    background-color: #0f0f0f;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #ffffff;
+    padding: 14px 18px;
+    margin: 18px 0 24px;
+    font-size: 0.92rem;
+    border-radius: 2px;
+    color: var(--text-primary);
+}
+
+.notice-box.aubergine {
+    border-left-color: #888888;
+    background-color: #0f0f0f;
+}
+
+.notice-box.warning {
+    border-left-color: #cccccc;
+    background-color: #0f0f0f;
+}
+
+.notice-box.success {
+    border-left-color: #ffffff;
+    background-color: #0f0f0f;
+}
+
+.notice-box strong {
+    color: #ffffff;
+}
+
+/* ================= Code Containers ================= */
+.code-box {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-code);
+    margin: 16px 0 24px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: var(--bg-code-header);
+    border-bottom: 1px solid var(--border-color);
+    padding: 8px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.code-filename {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.copy-btn {
+    background-color: #1c1c1c;
+    border: 1px solid var(--border-color);
+    color: #ffffff;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 2px;
+    font-family: var(--font-main);
+    transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+
+.copy-btn.copied {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+    font-weight: bold;
+}
+
+pre {
+    margin: 0;
+    padding: 14px 18px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: #f5f5f5;
+    background-color: var(--bg-code);
+}
+
+pre.terminal-output {
+    background-color: #040404;
+    border-top: 1px solid var(--border-subtle);
+    color: #f0f0f0;
+}
+
+code {
+    font-family: var(--font-mono);
+}
+
+p code, li code, td code {
+    background-color: #181818;
+    color: #ffffff;
+    padding: 2px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    font-size: 0.88em;
+}
+
+/* ================= Wikipedia Tables (Clean Black & White) ================= */
+.wikitable {
+    background-color: #080808;
+    color: var(--text-primary);
+    margin: 1.4em 0;
+    border: 1px solid var(--border-color);
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.92rem;
+}
+
+.wikitable th, .wikitable td {
+    border: 1px solid var(--border-color);
+    padding: 10px 14px;
+    text-align: left;
+}
+
+.wikitable th {
+    background-color: #141414;
+    font-weight: 700;
+    color: #ffffff;
+    border-bottom: 2px solid #444444;
+}
+
+.wikitable tr:nth-child(even) td {
+    background-color: #0d0d0d;
+}
+
+.wikitable tr:hover td {
+    background-color: #161616;
+}
+
+/* ================= Index Portal Directory Cards ================= */
+.practical-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 18px;
+    margin: 24px 0 36px;
+}
+
+.practical-entry {
+    border: 1px solid var(--border-color);
+    background-color: #0c0c0c;
+    padding: 20px 22px;
+    border-radius: 3px;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.practical-entry:hover {
+    border-color: #666666;
+    background-color: #111111;
+}
+
+.practical-entry h3 {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    font-size: 1.15rem;
+}
+
+.practical-entry h3 a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.practical-entry h3 a:hover {
+    text-decoration: underline;
+}
+
+.practical-badge {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    border-radius: 2px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 1px solid var(--border-color);
+    display: inline-block;
+}
+
+.practical-entry p {
+    margin-bottom: 14px;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    flex-grow: 1;
+}
+
+.file-list {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 10px;
+    margin-top: 8px;
+}
+
+.file-list strong {
+    color: #cccccc;
+}
+
+/* ================= Step Indicator Badges ================= */
+.step-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 2px 10px;
+    font-size: 0.82rem;
+    font-weight: bold;
+    border-radius: 2px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.nav-pagination {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.nav-pagination a {
+    background-color: #101010;
+    border: 1px solid var(--border-color);
+    color: #ffffff;
+    padding: 10px 16px;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.nav-pagination a:hover {
+    border-color: #ffffff;
+    background-color: #ffffff;
+    color: #000000;
+    text-decoration: none;
+}
+
+/* Status colors override to clean high-contrast monochrome */
+.status-valid {
+    color: #ffffff;
+    font-weight: bold;
+    border-bottom: 1px solid #ffffff;
+}
+
+.status-invalid {
+    color: #a0a0a0;
+    font-style: italic;
+}
+
+/* ================= Footer ================= */
+.footer {
+    border-top: 1px solid var(--border-color);
+    padding: 24px 32px;
+    background-color: #050505;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: auto;
+}
+
+.footer p {
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.footer a {
+    color: #ffffff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 820px) {
+    .site-wrapper {
+        border: none;
+    }
+    .container {
+        padding: 20px 16px 40px;
+    }
+    .header-bar {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .nav-links {
+        gap: 6px;
+    }
+    .practical-grid {
+        grid-template-columns: 1fr;
+    }
+}

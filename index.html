@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiler Design Laboratory Manual — Wikipedia Reference Compendium</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-wrapper">
+    <!-- Header / Navigation Bar -->
+    <header class="header-bar">
+        <a href="index.html" class="site-title">
+            <span class="site-logo">CD LAB</span>
+            <span class="site-title-text">Compiler Design</span>
+            <!-- <span class="site-title-badge">Ubuntu Edition</span> -->
+        </a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Main Page</a></li>
+                <li><a href="practical1.html">Prac 1</a></li>
+                <li><a href="practical2.html">Prac 2</a></li>
+                <li><a href="practical3.html">Prac 3</a></li>
+                <li><a href="practical4.html">Prac 4</a></li>
+                <li><a href="practical5.html">Prac 5</a></li>
+                <li><a href="practical6.html">Prac 6</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="page-title">Compiler Design Laboratory Practicals</h1>
+         
+
+        <!-- <div class="notice-box aubergine">
+            <strong>System Environment Notice:</strong> All practicals are compiled and executed using the GNU toolchain (<code>flex</code>, <code>bison</code>, and <code>gcc</code>) on <strong>Ubuntu Linux</strong>. Ensure prerequisites are installed via <code>sudo apt install -y flex bison build-essential</code>.
+        </div> -->
+
+        <!-- Contents Box (Wikipedia TOC) -->
+        <nav class="toc-box">
+            <div class="toc-title">Contents</div>
+            <ul>
+                <li><a href="#practical-catalog">1 Practical Assignments Catalog</a>
+                    <ul>
+                        <li><a href="#prac-1">1.1 Practical 1: Lexical Analyzer to Identify C Tokens</a></li>
+                        <li><a href="#prac-2">1.2 Practical 2: Lexical Analyzer to Identify Number Systems</a></li>
+                        <li><a href="#prac-3">1.3 Practical 3: Arithmetic Calculator using LEX and YACC</a></li>
+                        <li><a href="#prac-4">1.4 Practical 4: Context Free Grammar (L = { 0ⁿ1ⁿ | n ≥ 1 })</a></li>
+                        <li><a href="#prac-5">1.5 Practical 5: Target Code Generator for 8086 Assembly</a></li>
+                        <li><a href="#prac-6">1.6 Practical 6: Deterministic Finite Automaton (Divisibility by 3)</a></li>
+                    </ul>
+                </li>
+                <li><a href="#quick-command-summary">2 Quick Command Summary</a></li>
+                <li><a href="#troubleshooting">3 Troubleshooting &amp; Common Diagnostics</a></li>
+            </ul>
+        </nav>
+
+        <!-- Section 1: Catalog -->
+        <h2 id="practical-catalog">1. Practical Assignments Catalog</h2>
+        <p>Select any practical assignment below to access complete source codes, lexical rules, grammar definitions, and execution logs.</p>
+
+        <div class="practical-grid">
+            <!-- Practical 1 -->
+            <article class="practical-entry" id="prac-1">
+                <div>
+                    <span class="practical-badge">Lexical Analysis</span>
+                    <h3><a href="practical1.html">Practical 1: Lexical Analyzer for C Tokens</a></h3>
+                    <p>Constructs a complete lexical scanner in Flex that tokenizes C source code into headers, data types, identifiers, control keywords, relational/logical operators, comments, and bracket terminators.</p>
+                </div>
+                <div class="file-list">
+                    <strong>Files:</strong> <code>a.l</code> &bull; <code>input.c</code><br>
+                    <strong>Tools:</strong> Flex &bull; GCC &bull; Ubuntu Terminal
+                </div>
+            </article>
+
+            <!-- Practical 2 -->
+            <article class="practical-entry" id="prac-2">
+                <div>
+                    <span class="practical-badge">Pattern Recognition</span>
+                    <h3><a href="practical2.html">Practical 2: Lexical Analyzer for Number Systems</a></h3>
+                    <p>Disambiguates and classifies numerical representations including Binary (<code>0b</code>), Hexadecimal (<code>0x</code>), Octal (leading <code>0</code>), Scientific Exponent (<code>12e5</code>), Signed Floats, and Integers.</p>
+                </div>
+                <div class="file-list">
+                    <strong>Files:</strong> <code>program2.l</code> &bull; <code>input.txt</code><br>
+                    <strong>Tools:</strong> Flex &bull; Regular Expressions &bull; GCC
+                </div>
+            </article>
+
+            <!-- Practical 3 -->
+            <article class="practical-entry" id="prac-3">
+                <div>
+                    <span class="practical-badge">Parsing &amp; Evaluation</span>
+                    <h3><a href="practical3.html">Practical 3: Calculator using LEX and YACC</a></h3>
+                    <p>Implements an LALR(1) parser for evaluating arithmetic expressions supporting precedence, parentheses, unary minus, and runtime zero-division / modulo exception validation.</p>
+                </div>
+                <div class="file-list">
+                    <strong>Files:</strong> <code>calculator.l</code> &bull; <code>calculator.y</code><br>
+                    <strong>Tools:</strong> Bison &bull; Flex &bull; GCC
+                </div>
+            </article>
+
+            <!-- Practical 4 -->
+            <article class="practical-entry" id="prac-4">
+                <div>
+                    <span class="practical-badge">Context-Free Grammar</span>
+                    <h3><a href="practical4.html">Practical 4: CFG Language Validator (0ⁿ1ⁿ)</a></h3>
+                    <p>Defines grammar productions in Yacc to recognize and validate context-free language <em>L = { 0ⁿ1ⁿ | n ≥ 1 }</em>, ensuring balanced prefix 0s and suffix 1s with precise error detection.</p>
+                </div>
+                <div class="file-list">
+                    <strong>Files:</strong> <code>cfg.l</code> &bull; <code>cfg.y</code><br>
+                    <strong>Tools:</strong> Bison &bull; Flex &bull; Grammar Automata
+                </div>
+            </article>
+
+            <!-- Practical 5 -->
+            <article class="practical-entry" id="prac-5">
+                <div>
+                    <span class="practical-badge">Code Generation</span>
+                    <h3><a href="practical5.html">Practical 5: 8086 Assembly Code Generator</a></h3>
+                    <p>Synthesizes three-address and intermediate assignment statements into target Intel 8086 machine assembly instructions (<code>MOV</code>, <code>ADD</code>, <code>SUB</code>, <code>MUL</code>, <code>DIV</code>).</p>
+                </div>
+                <div class="file-list">
+                    <strong>Files:</strong> <code>exp.l</code> &bull; <code>exp.y</code> &bull; <code>input.txt</code><br>
+                    <strong>Tools:</strong> Lex &bull; Yacc &bull; Intel 8086 Assembly
+                </div>
+            </article>
+
+            <!-- Practical 6 -->
+            <article class="practical-entry" id="prac-6">
+                <div>
+                    <span class="practical-badge">Automata Theory</span>
+                    <h3><a href="practical6.html">Practical 6: DFA for Decimal Divisibility by 3</a></h3>
+                    <p>Models a 3-state Deterministic Finite Automaton (DFA) using parser states (<code>q0</code>, <code>q1</code>, <code>q2</code>) to compute modulo 3 residue on streaming arbitrary decimal numbers.</p>
+                </div>
+                <div class="file-list">
+                    <strong>Files:</strong> <code>dfa.l</code> &bull; <code>dfa.y</code><br>
+                    <strong>Tools:</strong> Bison &bull; Lex &bull; State Machine
+                </div>
+            </article>
+        </div>
+
+        <!-- Section 2: Command Summary Matrix -->
+        <h2 id="quick-command-summary">2. Quick Command Summary</h2>
+        <p>Reference cheat-sheet showing the compilation pipeline and execution commands for each practical inside its respective directory.</p>
+
+        <div style="overflow-x: auto;">
+            <table class="wikitable">
+                <thead>
+                    <tr>
+                        <th style="width: 12%;">Practical</th>
+                        <th style="width: 25%;">Primary Source Files</th>
+                        <th>Terminal Compilation &amp; Execution Pipeline</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong><a href="practical1.html">Practical 1</a></strong></td>
+                        <td><code>a.l</code>, <code>input.c</code></td>
+                        <td><code>flex a.l</code> &rarr; <code>gcc lex.yy.c -o a</code> &rarr; <code>./a input.c</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong><a href="practical2.html">Practical 2</a></strong></td>
+                        <td><code>program2.l</code>, <code>input.txt</code></td>
+                        <td><code>flex program2.l</code> &rarr; <code>gcc lex.yy.c -o a.out</code> &rarr; <code>./a.out input.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong><a href="practical3.html">Practical 3</a></strong></td>
+                        <td><code>calculator.l</code>, <code>calculator.y</code></td>
+                        <td><code>bison -y -d calculator.y</code> &rarr; <code>flex calculator.l</code> &rarr; <code>gcc y.tab.c lex.yy.c -o calculator</code> &rarr; <code>./calculator</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong><a href="practical4.html">Practical 4</a></strong></td>
+                        <td><code>cfg.l</code>, <code>cfg.y</code></td>
+                        <td><code>bison -y -d cfg.y</code> &rarr; <code>flex cfg.l</code> &rarr; <code>gcc y.tab.c lex.yy.c -o cfg</code> &rarr; <code>./cfg</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong><a href="practical5.html">Practical 5</a></strong></td>
+                        <td><code>exp.l</code>, <code>exp.y</code>, <code>input.txt</code></td>
+                        <td><code>bison -y -d exp.y</code> &rarr; <code>flex exp.l</code> &rarr; <code>gcc y.tab.c lex.yy.c -o exp</code> &rarr; <code>./exp</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong><a href="practical6.html">Practical 6</a></strong></td>
+                        <td><code>dfa.l</code>, <code>dfa.y</code></td>
+                        <td><code>bison -y -d dfa.y</code> &rarr; <code>flex dfa.l</code> &rarr; <code>gcc y.tab.c lex.yy.c -o dfa</code> &rarr; <code>./dfa</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 3: Troubleshooting -->
+        <h2 id="troubleshooting">3. Troubleshooting &amp; Diagnostics</h2>
+        <p>Standard resolution table for compilation, linking, and runtime diagnostics encountered in Ubuntu Linux environment:</p>
+
+        <div style="overflow-x: auto;">
+            <table class="wikitable">
+                <thead>
+                    <tr>
+                        <th style="width: 35%;">Observed Diagnostic / Message</th>
+                        <th>Root Cause &amp; Prescribed Fix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>flex: command not found</code> or <code>bison: command not found</code></td>
+                        <td>Packages missing from operating system. Install toolchain: <code>sudo apt install -y flex bison build-essential</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>fatal error: y.tab.h: No such file or directory</code></td>
+                        <td>Header file generation missing. Run Bison with <code>-d</code> flag <strong>before</strong> compiling Flex: <code>bison -y -d file.y</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>bash: ./calculator: No such file or directory</code></td>
+                        <td>GCC compilation did not produce executable due to prior compile error. Inspect terminal output from step 4 for fatal errors.</td>
+                    </tr>
+                    <tr>
+                        <td><code>File read error: cannot open input.txt</code> (Practical 5)</td>
+                        <td>The file <code>input.txt</code> is missing from the active directory. Create it in the current folder before launching <code>./exp</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Flex says <code>unrecognized rule</code> or <code>bad character</code></td>
+                        <td>Rule pattern lines contain leading whitespace or invisible formatting characters. Re-paste the file ensuring pattern begins in column 1.</td>
+                    </tr>
+                    <tr>
+                        <td>Program pauses and terminal appears unresponsive (Practicals 3, 4, 6)</td>
+                        <td>The interactive parser is awaiting user standard input (<code>stdin</code>). Enter your expression/number and press <kbd>Enter</kbd> (<kbd>Ctrl</kbd> + <kbd>C</kbd> to exit).</td>
+                    </tr>
+                    <tr>
+                        <td>Compiler output displays <code>warning: ...</code> lines</td>
+                        <td>Warnings are non-fatal compiler notes. Only lines explicitly containing <code>error:</code> stop binary production.</td>
+                    </tr>
+                    <tr>
+                        <td>Clean build / Reset workspace</td>
+                        <td>Purge generated compiler intermediate artifacts: <code>rm -f lex.yy.c y.tab.c y.tab.h a.out</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>Compiler Design Laboratory Reference Manual</strong> &bull; Ubuntu Dark Theme Edition</p>
+        <p>Formatted in encyclopedic Wikipedia style &bull; Optimized for Linux, Flex, Bison, and GCC workflows.</p>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical 1: Lexical Analyzer using LEX to identify tokens — Compiler Design</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-wrapper">
+    <!-- Header / Navigation Bar -->
+    <header class="header-bar">
+        <a href="index.html" class="site-title">
+            <span class="site-logo">CD LAB</span>
+            <span class="site-title-text">Compiler Design Manual</span>
+            <span class="site-title-badge">Ubuntu Edition</span>
+        </a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Main Page</a></li>
+                <li><a href="practical1.html" class="active">Prac 1</a></li>
+                <li><a href="practical2.html">Prac 2</a></li>
+                <li><a href="practical3.html">Prac 3</a></li>
+                <li><a href="practical4.html">Prac 4</a></li>
+                <li><a href="practical5.html">Prac 5</a></li>
+                <li><a href="practical6.html">Prac 6</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="page-title">Practical 1: Lexical Analyzer using LEX to Identify C Tokens</h1>
+
+
+        <!-- Section 2: Step 1 -->
+        <h2 id="step-1">Step 1: Create Practical Workspace Directory</h2>
+        <p>Open an Ubuntu terminal (<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd>) and create a dedicated working directory on your Desktop:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Bash Terminal</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>mkdir -p ~/Desktop/CompilerLab/Practical1
+cd ~/Desktop/CompilerLab/Practical1</code></pre>
+        </div>
+
+        <!-- Section 3: Step 2 -->
+        <h2 id="step-2">Step 2: Create the Sample C Source File (<code>input.c</code>)</h2>
+        <p>Create the input file that will be fed into the lexical analyzer:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit input.c</code></pre>
+        </div>
+
+        <p>Paste the following C source code and save the file:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">input.c</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>#include&lt;stdio.h&gt;
+int add(int a, int b)
+{
+    int c = a + b;
+    return c;
+}
+void main()
+{
+    int x = 5;
+    /* this is a comment */
+    if (x &gt; 3 &amp;&amp; x != 9)
+    {
+        printf("Hello");
+    }
+}</code></pre>
+        </div>
+
+        <!-- Section 4: Step 3 -->
+        <h2 id="step-3">Step 3: Create the Flex Lexer Specification (<code>a.l</code>)</h2>
+        <p>Create the Lex definition file using your text editor:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Ubuntu Command</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>gedit a.l</code></pre>
+        </div>
+
+        <p>Paste the complete Flex program below and save:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">a.l</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>%option noyywrap
+%{
+#include &lt;stdio.h&gt;
+%}
+
+digit       [0-9]+
+header      "#include"[ \t]*"&lt;"[a-zA-Z0-9_]+".h&gt;"
+inbuilt     (printf|scanf|clrscr|getch|exit)[ \t]*"("[^;\n]*")"
+comment     "/*"([^*]|\*+[^*/])*\*+"/"
+main_func   ("void"|"int")[ \t]+"main"[ \t]*"("[ \t]*")"
+function    ("void"|"int"|"char"|"float"|"double")[ \t]+[a-zA-Z_][a-zA-Z0-9_]*[ \t]*"("[^)\n]*")"
+datatype    ("int"|"char"|"float"|"double"|"void")[ \t]+
+operator    [+\-*/%]
+assign      "="
+relational  ("&lt;="|\"&gt;=\"|\"==\"|\"!=\"|\"&lt;\"|\"&gt;\")
+logical     ("&&"|"||")
+terminator  ";"
+bracket1    "{"
+bracket2    "}"
+loop        (if|else|for|while|do)
+word        [a-zA-Z_][a-zA-Z0-9_]*
+
+%%
+{digit}         { printf("\n Number                  :: %s", yytext); }
+{header}        { printf("\n Header File             :: %s", yytext); }
+{inbuilt}       { printf("\n Function                :: %s", yytext); }
+{comment}       { printf("\n Comment                 :: %s", yytext); }
+{main_func}     { printf("\n Main Function           :: %s", yytext); }
+{function}      { printf("\n User function           :: %s", yytext); }
+{datatype}      { printf("\n Datatype                :: %s", yytext); }
+{operator}      { printf("\n Operator                :: %s", yytext); }
+{assign}        { printf("\n Assignment operator     :: %s", yytext); }
+{relational}    { printf("\n Relational operator     :: %s", yytext); }
+{logical}       { printf("\n Logical operator        :: %s", yytext); }
+{terminator}    { printf("\n Terminator              :: %s", yytext); }
+{bracket1}      { printf("\n Opening curly bracket   :: %s", yytext); }
+{bracket2}      { printf("\n Closing curly bracket   :: %s", yytext); }
+{loop}          { printf("\n Loop/Condition keyword  :: %s", yytext); }
+{word}          { printf("\n Variable/Identifier     :: %s", yytext); }
+[ \t\r\n]+      ;
+.               ;
+%%
+
+int main(int argc, char *argv[])
+{
+    FILE *fp;
+    if (argc &lt; 2) {
+        printf("Usage: %s input.c\n", argv[0]);
+        return 1;
+    }
+    fp = fopen(argv[1], "r");
+    if (fp == NULL) {
+        printf("Error opening input file\n");
+        return 1;
+    }
+    yyin = fp;
+    yylex();
+    fclose(fp);
+    printf("\n");
+    return 0;
+}</code></pre>
+        </div>
+
+        <!-- Section 5: Step 4 -->
+        <h2 id="step-4">Step 4: Compile and Execute on Ubuntu</h2>
+        <p>Run the Flex generator, compile the resulting C scanner with GCC, and execute passing <code>input.c</code>:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Terminal Build &amp; Run</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre><code>flex a.l
+gcc lex.yy.c -o a
+./a input.c</code></pre>
+        </div>
+
+        <!-- Section 6: Output -->
+        <h2 id="expected-output">Expected Terminal Output</h2>
+        <p>The scanner processes <code>input.c</code> sequentially and displays categorized tokens:</p>
+
+        <div class="code-box">
+            <div class="code-header">
+                <span class="code-filename">Standard Output</span>
+                <button class="copy-btn" type="button">Copy code</button>
+            </div>
+            <pre class="terminal-output"><code> Header File             :: #include&lt;stdio.h&gt;
+ User function           :: int add(int a, int b)
+ Opening curly bracket   :: {
+ Datatype                :: int 
+ Variable/Identifier     :: c
+ Assignment operator     :: =
+ Variable/Identifier     :: a
+ Operator                :: +
+ Variable/Identifier     :: b
+ Terminator              :: ;
+ Variable/Identifier     :: return
+ Variable/Identifier     :: c
+ Terminator              :: ;
+ Closing curly bracket   :: }
+ Main Function           :: void main()
+ Opening curly bracket   :: {
+ Datatype                :: int 
+ Variable/Identifier     :: x
+ Assignment operator     :: =
+ Number                  :: 5
+ Terminator              :: ;
+ Comment                 :: /* this is a comment */
+ Loop/Condition keyword  :: if
+ Relational operator     :: &gt;
+ Number                  :: 3
+ Logical operator        :: &amp;&amp;
+ Relational operator     :: !=
+ Number                  :: 9
+ Opening curly bracket   :: {
+ Function                :: printf("Hello")
+ Terminator              :: ;
+ Closing curly bracket   :: }
+ Closing curly bracket   :: }</code></pre>
+        </div>
+
+        <!-- Navigation Pagination -->
+        <div class="nav-pagination">
+            <a href="index.html">&larr; Back to Main Portal</a>
+            <a href="practical2.html">Next: Practical 2 (Number Systems) &rarr;</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>Compiler Design Laboratory Reference Manual</strong> &bull; Ubuntu Dark Theme Edition</p>
+        <p>Formatted in encyclopedic Wikipedia style &bull; Practical 1: Lexical Analysis</p>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
